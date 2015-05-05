@@ -24,7 +24,14 @@ class ViewController: UIViewController {
     var userIsInTheMiddleOfTypingANumber = false
     
     @IBAction func appendDigit(sender: UIButton) {
-        
+        let digit = sender.currentTitle!
+        if userIsInTheMiddleOfTypingANumber {
+            display.text! += digit
+        }
+        else {
+            display.text = digit
+            userIsInTheMiddleOfTypingANumber = true
+        }
     }
 
     override func viewDidLoad() {
