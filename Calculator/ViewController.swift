@@ -44,37 +44,38 @@ class ViewController: UIViewController {
         if userIsInTheMiddleOfTypingANumber {
             enter()
         }
-        switch operation {
-        case "×":
-            performBinaryOperation({ $0 * $1 })
-        case "÷":
-            performBinaryOperation({ $1 / $0 })
-        case "+":
-            performBinaryOperation({ $0 + $1 })
-        case "−":
-            performBinaryOperation({ $1 - $0 })
+        switch(operation) {
+        case "×": performOperation { $0 * $1 }
+        case "÷": performOperation { $1 / $0 }
+        case "+": performOperation { $0 + $1 }
+        case "−": performOperation { $1 - $0 }
+        case "√": performOperation { sqrt($0) }
         default: break
         }
     }
     
-    func performBinaryOperation(operation: (Double, Double) -> Double) {
+    func performOperation(operation: (Double, Double) -> Double) {
         if operandStack.count >= 2 {
             displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
             enter()
         }
     }
     
-    func performUnaryOperation(operation: Double -> Double) {
+    func performOperation(operation: Double -> Double) {
         if operandStack.count >= 1 {
             displayValue = operation(operandStack.removeLast())
             enter()
         }
     }
     
-    func multiply(op1: Double, op2: Double) -> Double {
-        return op1 * op2
+    @IBAction func clear(sender: UIButton) {
+        // Clear the stack and the display text
+        displayValue = 0
+        operandStack.removeAll(keepCapacity: false)
     }
-    
+
+    var operandStack = Array<Double>()
+
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
         operandStack.append(displayValue)
