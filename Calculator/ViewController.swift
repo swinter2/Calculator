@@ -39,29 +39,43 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func appendConstant(sender: UIButton) {
+        let digit = sender.currentTitle!
+        if userIsInTheMiddleOfTypingANumber {
+            enter()
+        }
+        switch digit {
+        case "π":
+            displayValue = M_PI
+        default: break
+        }
+    }
+    
     @IBAction func operate(sender: UIButton) {
         let operation = sender.currentTitle!
         if userIsInTheMiddleOfTypingANumber {
             enter()
         }
         switch(operation) {
-        case "×": performOperation { $0 * $1 }
-        case "÷": performOperation { $1 / $0 }
-        case "+": performOperation { $0 + $1 }
-        case "−": performOperation { $1 - $0 }
-        case "√": performOperation { sqrt($0) }
+        case "×": performBinaryOperation { $0 * $1 }
+        case "÷": performBinaryOperation { $1 / $0 }
+        case "+": performBinaryOperation { $0 + $1 }
+        case "−": performBinaryOperation { $1 - $0 }
+        case "√": performUnaryOperation(sqrt)
+        case "sin": performUnaryOperation(sin)
+        case "cos": performUnaryOperation(cos)
         default: break
         }
     }
     
-    func performOperation(operation: (Double, Double) -> Double) {
+    func performBinaryOperation(operation: (Double, Double) -> Double) {
         if operandStack.count >= 2 {
             displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
             enter()
         }
     }
     
-    func performOperation(operation: Double -> Double) {
+    func performUnaryOperation(operation: Double -> Double) {
         if operandStack.count >= 1 {
             displayValue = operation(operandStack.removeLast())
             enter()
@@ -70,11 +84,10 @@ class ViewController: UIViewController {
     
     @IBAction func clear(sender: UIButton) {
         // Clear the stack and the display text
-        displayValue = 0
+//        displayValue = 0
+        display.text = "0"
         operandStack.removeAll(keepCapacity: false)
     }
-
-    var operandStack = Array<Double>()
 
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
