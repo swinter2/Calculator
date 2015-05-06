@@ -30,6 +30,15 @@ class ViewController: UIViewController {
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
+        switch digit {
+        case ".":
+            // If the '.' is in the string
+            if display.text!.rangeOfString(digit) != nil {
+                return
+            }
+        default: break
+        }
+        
         if userIsInTheMiddleOfTypingANumber {
             display.text! += digit
         }
