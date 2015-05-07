@@ -13,6 +13,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var history: UILabel!
     @IBOutlet weak var display: UILabel!
     
     var displayValue: Double {
@@ -27,6 +28,12 @@ class ViewController: UIViewController {
     
     var userIsInTheMiddleOfTypingANumber = false
     var operandStack = [Double]()
+    var historyStack = [String]()
+    var historyValue: String {
+        get {
+            return "\(historyStack)"
+        }
+    }
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -35,6 +42,9 @@ class ViewController: UIViewController {
             // If the '.' is in the string
             if display.text!.rangeOfString(digit) != nil {
                 return
+            }
+            if !userIsInTheMiddleOfTypingANumber {
+               display.text = "0."
             }
         default: break
         }
@@ -46,6 +56,8 @@ class ViewController: UIViewController {
             display.text = digit
             userIsInTheMiddleOfTypingANumber = true
         }
+        
+        history.text = historyValue
     }
     
     @IBAction func appendConstant(sender: UIButton) {
@@ -56,6 +68,7 @@ class ViewController: UIViewController {
         switch digit {
         case "π":
             displayValue = M_PI
+            enter()
         default: break
         }
     }
@@ -75,6 +88,7 @@ class ViewController: UIViewController {
         case "cos": performUnaryOperation(cos)
         default: break
         }
+        history.text = historyValue
     }
     
     func performBinaryOperation(operation: (Double, Double) -> Double) {
@@ -93,14 +107,17 @@ class ViewController: UIViewController {
     
     @IBAction func clear(sender: UIButton) {
         // Clear the stack and the display text
-//        displayValue = 0
         display.text = "0"
         operandStack.removeAll(keepCapacity: false)
+        historyStack.removeAll(keepCapacity: false)
+        history.text = historyValue
     }
 
     @IBAction func enter() {
         userIsInTheMiddleOfTypingANumber = false
         operandStack.append(displayValue)
+        historyStack.append("\(displayValue)")
+        history.text = historyValue
     }
 
     override func viewDidLoad() {
